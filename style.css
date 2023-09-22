@@ -1,10 +1,23 @@
+* {
+    font-family: 'Roboto Mono', monospace;
+}
+body {
+    background-color: lightgray;
+}
 h1{
-    /* display: inline;
-    position: relative; */
+    /* display: inline; */
+    position: relative;
     margin: 10px;
     color: antiquewhite;
-    left: 25px;
+    left: 40px;
 }
 #time{
     color:antiquewhite;
+}
+.container{
+    margin-left: 20px;
+}
+#search label{
+    font-size: 1.75rem;
+    font-weight: bolder;
 }
