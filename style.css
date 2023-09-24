@@ -4,7 +4,7 @@
 body {
     background-color: lightgray;
 }
-h1{
+header h1{
     /* display: inline; */
     position: relative;
     margin: 10px;
@@ -14,10 +14,34 @@ h1{
 #time{
     color:antiquewhite;
 }
-.container{
+.container-xxl{
     margin-left: 20px;
+    margin-right: 20px;
+    max-width: 95%;
+}
+#search {
+    height: 750px;
 }
 #search label{
     font-size: 1.75rem;
     font-weight: bolder;
+}
+ul{
+    padding: 0px;
+}
+#forecastCard{
+    height: 500px;
+    border-color: black;
+    border: solid;
+    background-color: whitesmoke;
+}
+#fiveday{
+    padding: 0;
+}
+#fiveday h1{
+    color: black;
+    margin: 10px;
+}
+.card{
+    height: 300px;
 }
