@@ -10,7 +10,6 @@
 //save serach to local storage and diplay on LEFT UL make buttons that refresh that cities fetch
 // api.openweathermap.org/data/2.5/forecast?lat=" + lat + "&lon=" + lon + "&appid=13b4e423f9a07e67b579be6abba16366"
 
-var searchHistory = document.getElementById('prev-search');
 
 $(function(){
     var today = dayjs()
@@ -49,30 +48,37 @@ $(function(){
                 console.log(data)
             })
     }  
-    
+    var cityName = '';
     var i;
-    i = 0
-    $('#submit').click(function getCityName(event){
+    i = 0;
+    //generate elements func
+    function loadList(){
+        $('#prev-search').eq(9).remove();
+        $("<button class='btn btn-secondary w-100 my-3'>"+cityName+"<button>").prependTo('#prev-search');
+    }
+    //only save ten items func
+
+
+
+
+
+
+    //func for main button
+    $('#submit').click(function(event){
         event.preventDefault();
-        var cityName = '';
+        cityName = $('#city-search').val();
         i++;
-        if(!$('#city-search').val()){
-            cityName = event.target.innerHTML;
-        } else {
-            do{
-                localStorage.removeItem(i);
-                cityName = $('#city-search').val();
-                localStorage.setItem(i, cityName);
-                if ($('#prev-search').has("."+ i)){
-                    $('.'+ i).innerHTML = cityName;
-                } else {
-                    var saveSearch = document.createElement('button');
-                    $(saveSearch).addClass(i+'btn btn-secondary my-3 w-100');
-                    $('#prev-search').append(saveSearch);  
-                }
-            }
-            while (i < 10);  
-        }
+        localStorage.setItem(i, cityName)
+        loadList(cityname)
+    })
+
+    //func for search history
+    $('#history').on('click', function(event){
+        event.preventDefault();
+        cityName = event.target.innerHTML;
+        i++;
+        localStorage.setItem(i, cityName)
+        loadList(cityName)
     })
     
        
