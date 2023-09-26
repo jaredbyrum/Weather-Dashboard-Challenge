@@ -45,3 +45,6 @@ ul{
 .card{
     height: 300px;
 }
+#prev-search{
+    list-style: none;
+}

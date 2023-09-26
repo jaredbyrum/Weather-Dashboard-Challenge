@@ -12,7 +12,7 @@
 // 0, 8, 16, 24, 32, 39 list items
 
 $(function(){
-    var today = dayjs()
+    var today = dayjs().format("MMMM DD, YYYY");
     $('#time').text(dayjs().format("MMMM DD, YYYY"));
     
    
@@ -20,7 +20,7 @@ $(function(){
     //generate elements func
     function loadList(){
         $('#prev-search').eq(9).remove();
-        $("<button id='history' class='btn btn-secondary w-100 my-3'>"+cityName+"</button>").prependTo('#prev-search');
+        $("<li><button class='history btn btn-secondary w-100 my-3'>"+cityName+"</button></li>").prependTo('#prev-search');
     }
     //only save ten items func
     var i = 0;
@@ -43,16 +43,14 @@ $(function(){
     })
 
     //func for search history
-    $('#history').on('click', function(event){
+    $(document).on('click', '.history', function(event){
         event.preventDefault();
-        cityName = event.target.innerHTML;
+        cityName = event.target.textContent;
         loadList();
         saveItems();
         weather(cityName);
     })
     
-    
-
     //weather function
     function weather(cityName){
         var geocodeAPI = "http://api.openweathermap.org/geo/1.0/direct?q=" + cityName + ",US&appid=13b4e423f9a07e67b579be6abba16366";
@@ -79,19 +77,36 @@ $(function(){
                 })
                 .then(function(data){
                     console.log(data)
-                    
-                })    
+                    printWeather(data.list, cityName)    
+                })
+                
             })   
             
     }   
-        
-    function printWeather(cityName, ){
+
+    
+
+    
+
+    function printWeather(list, cityName){
+        //data object to simplify printing to cards
+        var index = 0;
         var weather = {
-            temp: data.list[i].main.temp,
-            humidity: data.list[i].main.humidity,
-            wind: data.list[i].wind.speed,
-            icon: data.list[i].weather.icon
+            temp: list[index].main.temp.toString(),
+            humidity: list[index].main.humidity.toString(),
+            wind: list[index].wind.speed.toString(),
+            icon: list[index].weather[0].icon.toString()
         }
+        // link to icon pngs
+        var iconUrl = "https://openweathermap.org/img/wn/" + weather.icon + ".png"
+        function todayWeather(){
+        $('#cityName').text(cityName+' (' + today + ')')
+        $('#wicon').attr('img', iconUrl) 
+        $('#temp').text(weather.temp)
+        $('#humidity').text(weather.humidity)
+        $('#wind').text(weather.wind)
+        } 
+        todayWeather(cityName, weather)
     }    
         
         
