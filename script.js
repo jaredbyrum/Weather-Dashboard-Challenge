@@ -100,12 +100,14 @@ $(function(){
         // link to icon pngs
         var iconUrl = "https://openweathermap.org/img/wn/" + weather.icon + ".png"
         function todayWeather(){
-        $('#cityName').text(cityName+' (' + today + ')')
-        $('#wicon').attr('img', iconUrl) 
-        $('#temp').text(weather.temp)
-        $('#humidity').text(weather.humidity)
-        $('#wind').text(weather.wind)
+            $('#forecastCard').children('#city-info').children('#cityName').text(cityName+' (' + today + ')')
+            $('#forecastCard').children('#city-info').children('#wicon').attr('src', iconUrl)
+            $('#forecastCard').children('#temp').text('Temp: ' + weather.temp + 'ºF')
+            $('#forecastCard').children('#humidity').text('Humidiity: ' + weather.humidity + '%')
+            $('#forecastCard').children('#wind').text('Wind: ' + weather.wind + 'MPH')
         } 
+
+
         todayWeather(cityName, weather)
     }    
         
