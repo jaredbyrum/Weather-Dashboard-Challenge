@@ -19,8 +19,9 @@ $(function(){
     var cityName = '';
     //generate elements func
     function loadList(){
-        $('#prev-search').eq(9).remove();
-        $("<li><button class='history btn btn-secondary w-100 my-3'>"+cityName+"</button></li>").prependTo('#prev-search');
+        //console.log('HELLO', $('#prev-search').eq(9))
+        $('#prev-search li').eq(9).remove();
+        $("<li><button class='history btn btn-secondary w-100 my-2'>"+cityName+"</button></li>").prependTo('#prev-search');
     }
     //only save ten items func
     var i = 0;
@@ -84,10 +85,6 @@ $(function(){
             
     }   
 
-    
-
-    
-
     function printWeather(list, cityName){
         //data object to simplify printing to cards
         var index = 0;
@@ -95,8 +92,10 @@ $(function(){
             temp: list[index].main.temp.toString(),
             humidity: list[index].main.humidity.toString(),
             wind: list[index].wind.speed.toString(),
-            icon: list[index].weather[0].icon.toString()
+            icon: list[index].weather[0].icon.toString(),
+            date: list.dt_txt
         }
+        var currentDate = dayjs().format('YYYY-MM-DD').add(1, d);
         // link to icon pngs
         var iconUrl = "https://openweathermap.org/img/wn/" + weather.icon + ".png"
         function todayWeather(){
@@ -106,11 +105,15 @@ $(function(){
             $('#forecastCard').children('#humidity').text('Humidiity: ' + weather.humidity + '%')
             $('#forecastCard').children('#wind').text('Wind: ' + weather.wind + 'MPH')
         } 
-
-
         todayWeather(cityName, weather)
     }    
-        
+        function fiveDayWeather(){
+            for(let i = 0; i < 4; i++){
+                var newDate = currentDate.add(i, d);
+                //foreach thorough list to find dt_txt contains(newdate)
+                
+            }
+        }
         
         
         
