@@ -29,7 +29,9 @@ $(function(){
     }
     function loadHistory(){
         for (let i = 1; i < 9; i++){
-            $("<li><button class='history btn btn-secondary w-100 my-2'>"+ localStorage.getItem(i, cityName) +"</button></li>").prependTo('#prev-search');
+            if(localStorage.getItem(i)){
+                 $("<li><button class='history btn btn-secondary w-100 my-2'>"+ localStorage.getItem(i, cityName) +"</button></li>").prependTo('#prev-search');
+            }
         }
     }
     loadHistory()
@@ -61,7 +63,7 @@ $(function(){
     
     //weather function
     function weather(cityName){
-        var geocodeAPI = "http://api.openweathermap.org/geo/1.0/direct?q=" + cityName + ",US&appid=13b4e423f9a07e67b579be6abba16366";
+        var geocodeAPI = "https://api.openweathermap.org/geo/1.0/direct?q=" + cityName + ",US&appid=13b4e423f9a07e67b579be6abba16366";
         
         fetch(geocodeAPI)
             .then(function (response){
@@ -77,7 +79,7 @@ $(function(){
                         var lon = data[i].lon.toString()
                     }
                 }
-            var weatherAPI = "http://api.openweathermap.org/data/2.5/forecast?lat=" + lat + "&lon=" + lon + "&appid=13b4e423f9a07e67b579be6abba16366&units=imperial";        
+            var weatherAPI = "https://api.openweathermap.org/data/2.5/forecast?lat=" + lat + "&lon=" + lon + "&appid=13b4e423f9a07e67b579be6abba16366&units=imperial";        
             fetch(weatherAPI)
                 .then(function(response){
                     if(response.status !== 200){
