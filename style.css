@@ -29,7 +29,7 @@ header h1{
 ul{
     padding: 0px;
 }
-#forecastCard{
+#day0{
     height: 350px;
     border-color: black;
     border: solid;
@@ -59,3 +59,4 @@ ul{
 #prev-search{
     list-style: none;
 }
+

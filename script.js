@@ -9,7 +9,6 @@
 //save responses to different elements
 //save serach to local storage and diplay on LEFT UL make buttons that refresh that cities fetch
 // api.openweathermap.org/data/2.5/forecast?lat=" + lat + "&lon=" + lon + "&appid=13b4e423f9a07e67b579be6abba16366"
-// 0, 8, 16, 24, 32, 39 list items
 
 $(function(){
     var today = dayjs().format("MMMM DD, YYYY");
@@ -17,29 +16,33 @@ $(function(){
     
    
     var cityName = '';
-    //generate elements func
-    function loadList(){
-        //console.log('HELLO', $('#prev-search').eq(9))
-        $('#prev-search li').eq(9).remove();
-        $("<li><button class='history btn btn-secondary w-100 my-2'>"+cityName+"</button></li>").prependTo('#prev-search');
-    }
-    //only save ten items func
-    var i = 0;
+    
+    //only save eight items func
+    let i = 0;
     function saveItems(){
-        if (i === 10){
+        if (i === 8){
             i = 0;
         } else {
             i++; 
             localStorage.setItem(i, cityName);  
         } 
     }
+    function loadHistory(){
+        for (let i = 1; i < 9; i++){
+            $("<li><button class='history btn btn-secondary w-100 my-2'>"+ localStorage.getItem(i, cityName) +"</button></li>").prependTo('#prev-search');
+        }
+    }
+    loadHistory()
+    //generate elements func
+    function loadList(){
+        $('#prev-search li').eq(7).remove();
+        $("<li><button class='history btn btn-secondary w-100 my-2'>"+cityName+"</button></li>").prependTo('#prev-search');
+    }
 
     //func for main button
     $('#submit').click(function(event){
         event.preventDefault();
         cityName = $('#city-search').val();
-        loadList();
-        saveItems();
         weather(cityName);
     })
 
@@ -47,9 +50,13 @@ $(function(){
     $(document).on('click', '.history', function(event){
         event.preventDefault();
         cityName = event.target.textContent;
-        loadList();
-        saveItems();
         weather(cityName);
+    })
+
+    //hide modal
+    $('#hide').on('click', function(event){
+        event.preventDefault();
+        $('.modal').modal('hide');
     })
     
     //weather function
@@ -70,68 +77,70 @@ $(function(){
                         var lon = data[i].lon.toString()
                     }
                 }
-        var weatherAPI = "http://api.openweathermap.org/data/2.5/forecast?lat=" + lat + "&lon=" + lon + "&appid=13b4e423f9a07e67b579be6abba16366&units=imperial";        
+            var weatherAPI = "http://api.openweathermap.org/data/2.5/forecast?lat=" + lat + "&lon=" + lon + "&appid=13b4e423f9a07e67b579be6abba16366&units=imperial";        
             fetch(weatherAPI)
-                //
                 .then(function(response){
-                    return response.json();
+                    if(response.status !== 200){
+                        $('.modal').modal('show');
+                        return;
+                    } else {
+                        loadList();
+                        saveItems();
+                        return response.json(); 
+                    }
                 })
                 .then(function(data){
                     console.log(data)
-                    printWeather(data.list, cityName)    
+                    //creating array of each unique date
+                    const uniqueDays = [];
+                    const formattedDays = [];
+                    const weatherData = {};
+                    //removes time stamp at end of date to only return unique days
+                    data.list.forEach(item => {
+                        const dt = item.dt_txt.slice(0, 10)
+                        var formattedDate = dayjs(dt).format('MM/DD/YYYY')
+                        if (!uniqueDays.includes(dt)) {
+                            uniqueDays.push(dt);
+                            weatherData[dt] = item;
+                            formattedDays.push(formattedDate);
+                        }
+                    })
+                console.log(uniqueDays)
+                console.log(weatherData)
+                printWeather(cityName, formattedDays, uniqueDays, weatherData)               
                 })
                 
             })   
-            
     }   
 
-    function printWeather(list, cityName){
-        //data object to simplify printing to cards
-        var index = 0;
-        var weather = {
-            temp: list[index].main.temp.toString(),
-            humidity: list[index].main.humidity.toString(),
-            wind: list[index].wind.speed.toString(),
-            icon: list[index].weather[0].icon.toString(),
-            date: list.dt_txt
+    function printWeather(cityName, formattedDays, uniqueDays, weatherData){
+        for(let i = 0; i < uniqueDays.length; i++){
+                var day = '#day' + i;
+                console.log(day) 
+                var weather = {
+                    temp: weatherData[uniqueDays[i]].main.temp.toString(),
+                    humidity: weatherData[uniqueDays[i]].main.humidity.toString(),
+                    wind: weatherData[uniqueDays[i]].wind.speed.toString(),
+                    icon: weatherData[uniqueDays[i]].weather[0].icon.toString()
+                }
+            // link to icon pngs
+            var iconUrl = "https://openweathermap.org/img/wn/" + weather.icon + ".png"
+                //first day
+                $(day).children('#city-info').children('#cityName').text(cityName + " (" + today + ")")
+                $(day).children('#city-info').children('#wicon').attr('src', iconUrl)
+                // weather 
+                $(day).children('.card-title').text(formattedDays[i])
+                $(day).children('#temp').text('Temp: ' + weather.temp + 'ºF')
+                $(day).children('#humidity').text('Humidiity: ' + weather.humidity + '%')
+                $(day).children('#wind').text('Wind: ' + weather.wind + 'MPH')
+                $(day).children('#wicon').attr('src', iconUrl)
+                $(day).children('#wicon').attr('style', 'height: 50px; width:50px')
+        }       
+    }
+    function loadHistory(){
+        for (let i = 1; i < 9; i++){
+            $("<li><button class='history btn btn-secondary w-100 my-2'>"+ localStorage.getItem(i, cityName) +"</button></li>").prependTo('#prev-search');
         }
-        var currentDate = dayjs().format('YYYY-MM-DD').add(1, d);
-        // link to icon pngs
-        var iconUrl = "https://openweathermap.org/img/wn/" + weather.icon + ".png"
-        function todayWeather(){
-            $('#forecastCard').children('#city-info').children('#cityName').text(cityName+' (' + today + ')')
-            $('#forecastCard').children('#city-info').children('#wicon').attr('src', iconUrl)
-            $('#forecastCard').children('#temp').text('Temp: ' + weather.temp + 'ºF')
-            $('#forecastCard').children('#humidity').text('Humidiity: ' + weather.humidity + '%')
-            $('#forecastCard').children('#wind').text('Wind: ' + weather.wind + 'MPH')
-        } 
-        todayWeather(cityName, weather)
-    }    
-        function fiveDayWeather(){
-            for(let i = 0; i < 4; i++){
-                var newDate = currentDate.add(i, d);
-                //foreach thorough list to find dt_txt contains(newdate)
-                
-            }
-        }
-        
-        
-        
-        
-        
+    }
 })
-
-    
-    
-
-
-
-
-
-
-
-
-
-
-
-    
+          
