@@ -17,24 +17,28 @@ $(function(){
    
     var cityName = '';
     
-    //only save eight items func
-    let i = 0;
-    function saveItems(){
-        if (i === 8){
-            i = 0;
-        } else {
-            i++; 
-            localStorage.setItem(i, cityName);  
-        } 
-    }
+    //load previous searches
+    console.log(localStorage.length)
     function loadHistory(){
-        for (let i = 1; i < 9; i++){
-            if(localStorage.getItem(i)){
-                 $("<li><button class='history btn btn-secondary w-100 my-2'>"+ localStorage.getItem(i, cityName) +"</button></li>").prependTo('#prev-search');
+        for (let i = 0; i <= localStorage.length; i++) { 
+            if(localStorage.getItem(i) !== null){
+                $("<li><button class='history btn btn-secondary w-100 my-2'>"+ localStorage.getItem(i) +"</button></li>").prependTo('#prev-search');  
             }
-        }
+        }  
     }
     loadHistory()
+
+    //only save eight items func
+    let key = localStorage.length;
+    function saveItems(){
+        if (key === 8){
+            key = 0;
+        } else {
+            key++; 
+            localStorage.setItem(key, cityName);  
+        } 
+    }
+   
     //generate elements func
     function loadList(){
         $('#prev-search li').eq(7).remove();
@@ -138,11 +142,6 @@ $(function(){
                 $(day).children('#wicon').attr('src', iconUrl)
                 $(day).children('#wicon').attr('style', 'height: 50px; width:50px')
         }       
-    }
-    function loadHistory(){
-        for (let i = 1; i < 9; i++){
-            $("<li><button class='history btn btn-secondary w-100 my-2'>"+ localStorage.getItem(i, cityName) +"</button></li>").prependTo('#prev-search');
-        }
     }
 })
           
